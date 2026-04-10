@@ -9,6 +9,7 @@ export default async function LoginPage() {
   });
   if (session) {
     return redirect("/");
+  } else {
   }
   return <LoginForm />;
 }

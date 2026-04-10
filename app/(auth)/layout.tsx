@@ -19,7 +19,13 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         Back
       </Link>
       <div className="flex w-full max-w-sm flex-col gap-6">
-        <Image src={Logo} alt="Logo" width={120} className="flex self-center" />
+        <Image
+          loading="lazy"
+          src={Logo}
+          alt="Logo"
+          width={120}
+          className="flex self-center"
+        />
         <Link
           href="/"
           className="flex items-center gap-2 self-center font-medium"
