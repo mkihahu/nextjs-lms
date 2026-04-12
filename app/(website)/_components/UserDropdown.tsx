@@ -36,11 +36,11 @@ export function UserDropdown({ email, name, image }: iAppProps) {
         <Button variant="ghost" size="icon" className="rounded-full">
           <Avatar>
             <AvatarImage src={image} alt="User avatar" />
-            <AvatarFallback>LR</AvatarFallback>
+            <AvatarFallback></AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-44">
+      <DropdownMenuContent align="end" className="min-w-48">
         <DropdownMenuLabel className=" flex min-w-0 flex-col">
           <span className="text-foreground truncate text-sm font-medium">
             {name}
