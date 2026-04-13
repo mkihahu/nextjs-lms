@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/rich-text-editor/Editor";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { Uploader } from "@/components/file-uploader/Uploader";
 
 export default function CreateCourse() {
   const form = useForm<CourseShemaType>({
@@ -208,13 +209,7 @@ export default function CreateCourse() {
                     <FieldLabel htmlFor="form-course-thumbnail">
                       Thumbnail Image
                     </FieldLabel>
-                    <Input
-                      {...field}
-                      id="form-course-thumbnail"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Thumbnail url"
-                      autoComplete="off"
-                    />
+                    <Uploader onChange={field.onChange} value={field.value} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
