@@ -31,7 +31,7 @@ import {
   CourseShemaType,
   courseStatuses,
 } from "@/lib/zodShema";
-import { ArrowLeft, PlusCircleIcon, SparkleIcon } from "lucide-react";
+import { ArrowLeft, Loader2, PlusCircleIcon, SparkleIcon } from "lucide-react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import slugify from "slugify";
@@ -42,11 +42,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RichTextEditor } from "@/components/rich-text-editor/Editor";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { Uploader } from "@/components/file-uploader/Uploader";
+import { useTransition } from "react";
+import { tryCatch } from "@/hooks/try-catch";
+import { toast } from "sonner";
+import { CreateCourse } from "./actions";
+import { useRouter } from "next/navigation";
 
-export default function CreateCourse() {
+export default function CourseCreationPage() {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  // Define the form using react-hook-form and zod for validation
   const form = useForm<CourseShemaType>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
@@ -63,9 +71,24 @@ export default function CreateCourse() {
     },
   });
 
-  function onSubmit(data: CourseShemaType) {
-    // Do something with the form values.
-    console.log(data);
+  // Handle form submission
+  function onSubmit(values: CourseShemaType) {
+    startTransition(async () => {
+      const { data: result, error } = await tryCatch(CreateCourse(values));
+
+      if (error) {
+        toast.error("An unexpected error occured. Please try again.");
+        return;
+      }
+
+      if (result.status === "success") {
+        toast.success(result.message);
+        form.reset();
+        router.push("/admin/courses");
+      } else if (result.status === "error") {
+        toast.error(result.message);
+      }
+    });
   }
 
   return (
@@ -382,8 +405,17 @@ export default function CreateCourse() {
             >
               Reset
             </Button>
-            <Button type="submit" form="form-course">
-              Create Course <PlusCircleIcon className="ml-1" size={16} />
+            <Button type="submit" disabled={isPending} form="form-course">
+              {isPending ? (
+                <>
+                  Creating...
+                  <Loader2 className="animate-spin ml-1" />
+                </>
+              ) : (
+                <>
+                  Create Course <PlusCircleIcon className="ml-1" size={16} />
+                </>
+              )}
             </Button>
           </Field>
         </CardFooter>
