@@ -5,6 +5,7 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3 } from "@/lib/S3Client";
+import { requireAdmin } from "@/app/data/admin/require-admin";
 
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1, { error: "Filename is required" }),
@@ -14,7 +15,22 @@ export const fileUploadSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const session = await requireAdmin();
   try {
+    // rate limit to 5 requests per minute
+    // const rateLimit = await requireRateLimit();
+    // if (!rateLimit) {
+    //   return {
+    //     status: "error",
+    //     message: "Rate limit exceeded",
+    //   };
+    // }
+
+    const isAdmin = session.user.role === "admin";
+
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
     const body = await request.json();
 
     const validation = fileUploadSchema.safeParse(body);

@@ -1,8 +1,10 @@
+import { adminGetcourses } from "@/app/data/admin/admin-get-courses";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import React from "react";
+import { AdminCourseCard } from "./_components/AdminCourseCard";
 
-export default function Courses() {
+export default async function Courses() {
+  const data = await adminGetcourses();
   return (
     <>
       <div className="flex items-center justify-between">
@@ -12,6 +14,14 @@ export default function Courses() {
           Create Course
         </Link>
       </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-7">
+        {data.map((course) => (
+          <AdminCourseCard key={course.id} data={course} />
+          // <div key={course.id}>{course.title}</div>
+        ))}
+      </div>
     </>
   );
 }
+
+// https://josmartlms-nextjs-project.t3.tigrisfiles.io/2ad1dbb2-22a6-4435-b164-2d72d1e5b0c9-sausages.jpeg

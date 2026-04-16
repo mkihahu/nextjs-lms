@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/app/data/admin/require-admin";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/lib/types";
@@ -9,10 +10,17 @@ import { headers } from "next/headers";
 export async function CreateCourse(
   values: CourseShemaType,
 ): Promise<ApiResponse> {
+  const session = await requireAdmin();
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    // rate limit to 5 requests per minute
+    // const rateLimit = await requireRateLimit();
+    // if (!rateLimit) {
+    //   return {
+    //     status: "error",
+    //     message: "Rate limit exceeded",
+    //   };
+    // }
+
     const validation = courseSchema.safeParse(values);
 
     if (!validation.success) {

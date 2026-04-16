@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        hostname: "josmartlms-nextjs-project.t3.tigrisfiles.io",
+        port: "",
+        protocol: "https",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
