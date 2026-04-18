@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { resolve } from "path";
+import { useConstructUrl } from "@/hooks/use-construct-url";
 
 interface Uploaderstate {
   id: string | null;
@@ -32,6 +33,7 @@ interface iAppProps {
 }
 
 export function Uploader({ onChange, value }: iAppProps) {
+  const fileUrl = useConstructUrl(value || "");
   const [fileState, setFileState] = useState<Uploaderstate>({
     error: false,
     file: null,
@@ -41,6 +43,7 @@ export function Uploader({ onChange, value }: iAppProps) {
     progress: 0,
     fileType: "image",
     key: value,
+    objectUrl: fileUrl,
   });
 
   async function uploadFile(file: File) {
